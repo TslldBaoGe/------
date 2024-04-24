@@ -1,0 +1,32 @@
+// ----------------------------------------------单元测试--------------------------------------------
+UnitTest
+    // TracePrint('1')
+
+    // login_PUMA_Enovia("Enovia")
+    // login_PUMA_Enovia()
+	send_email()
+
+    Return 
+End UnitTest
+
+
+
+
+Function send_email(sendEmailDict = "")
+
+	// global_configDict = py_public.use_python_method('obtain_global_configDict','py_public') //  test
+	// sendEmailDict = {'emailReceivers':["yxb@systec.com.cn"],'emailSubject':"test2",'emailContent':"test",'emailCC':["yxb@systec.com.cn"],'emailAttachs':[]} // test
+	Dim bRet
+	// emailPassword = CommanderCredential.GetCredential("test-email")['password']
+	// emailPassword = "Rpa20240311/"
+	// bRet = Mail.SendEx("smtpgw.pg.com", 587, false, "autoquotation.al@pg.com", emailPassword, "autoquotation.al@pg.com", sendEmailDict['emailReceivers'], sendEmailDict['emailCC'], sendEmailDict['emailSubject'], sendEmailDict['emailContent'], sendEmailDict['emailAttachs'])
+	bRet = Mail.SendEx("smtp.qiye.aliyun.com", 465, true, "yxb@systec.com.cn", "EmailYe01", "yxb@systec.com.cn", sendEmailDict['emailReceivers'], sendEmailDict['emailCC'], sendEmailDict['emailSubject'], sendEmailDict['emailContent'], sendEmailDict['emailAttachs'])
+	
+    If bRet
+		Log.Info("邮件发送成功")
+		Return True
+	Else
+		Log.Error("异常，邮件发送失败")
+		Throw "异常，邮件发送发生错误"
+	End If
+End Function

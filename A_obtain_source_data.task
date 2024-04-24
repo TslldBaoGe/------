@@ -1,0 +1,223 @@
+
+// ----------------------------------------------单元测试--------------------------------------------
+UnitTest
+	// TracePrint('1')
+	global_configDict = py_python.use_python_method('obtain_global_configDict', 'py_global_init')
+	// global_configDict = py_global_init.Inits()
+	exportPath = global_configDict['allNeedPathDict']['generalReportForPendingRequestsPath']
+	// // TracePrint(global_configDict['hhhhhh'])
+	// TracePrint(global_configDict)
+
+	// py_python.advance_eval("re.findall('\\d+','1231dd')",{"re":"import re"})
+	// login_sharepoint()
+	// obtain_source_data_Puma()
+
+	// py_process.update_history_source_PumaReports()
+	A_obtain_source_data_block()
+
+	// obtain_source_data_Puma()
+	// // obtain_source_data_Outlook()
+	// // 合并主数据表
+	// py_process.source_data_history_deal()
+
+	// // py_process.finally_write()
+	// res = py_python.advance_eval('3+3')
+	// TracePrint(res)
+
+	Return 
+End UnitTest
+
+
+Function A_obtain_source_data_block()
+	behaviorName = "1-获取Puma和Outlook的源数据"
+	Try 
+		// 导出Puma Reports数据表，并比对处理历史数据
+		// obtain_source_data_Puma()
+		// 比对处理Puma Reports历史数据
+		returnPumaMessgae = py_python.use_python_method('update_history_source_PumaReports','py_process_A_obtain_source_data')
+
+		// 获取邮箱Outlook的源数据
+		// r = py_process.obtain_source_data_Outlook_block()
+		// 比对处理Outlook历史数据,同时检查异常的
+		returnOutlookMessgae = py_python.use_python_method('update_history_source_outlook','py_process_A_obtain_source_data')
+		TracePrint(returnPumaMessgae,returnOutlookMessgae)
+		// returnPumaMessgae = "returnPumaMessgae"
+		// returnOutlookMessgae = "returnOutlookMessgae"
+		// 拼接消息
+		returnMessgae = py_python.advance_exec("'{}\\n\\n{}'.format(returnPumaMessgae,returnOutlookMessgae)",{"returnPumaMessgae":returnPumaMessgae,"returnOutlookMessgae":returnOutlookMessgae})
+
+		
+	Catch Exception
+		exceptionMessage = py_python.advance_exec("'%s处执行异常，%s,行数:%d'%(behaviorName,Exception,Line)", {"behaviorName": behaviorName, "Exception": CStr(Exception), "Line": Exception['Line']})
+		Log.Error(Exception)
+		sonDict = {behaviorName: ['执行异常', exceptionMessage]}
+		// TracePrint("global_configDict['runResultMonitorDict']",global_configDict['runResultMonitorDict'])
+		global_configDict['runResultMonitorDict']['resultMonitorMessageDict'] = py_python.dict_update(global_configDict['runResultMonitorDict']['resultMonitorMessageDict'], sonDict)
+		global_configDict['runResultMonitorDict']['是否继续执行后续流程操作'] = '不继续执行'
+
+		Throw exceptionMessage
+	Else
+		// successMessage = Format("")
+		// Log.Info(successMessage)
+		Log.Info(py_python.advance_exec("'%s处执行成功，执行详情数据:\\n%s'%(behaviorName,returnMessgae)", {"returnMessgae": returnMessgae, "behaviorName": behaviorName}))
+
+		sonDict = {behaviorName: ['执行成功', returnMessgae]}
+		global_configDict['runResultMonitorDict']['resultMonitorMessageDict'] = py_python.dict_update(global_configDict['runResultMonitorDict']['resultMonitorMessageDict'], sonDict)
+
+	End Try
+	// TracePrint('global_configDict',global_configDict['runResultMonitorDict']['resultMonitorMessageDict'])
+End Function
+
+
+Function obtain_source_data_Outlook()
+
+
+	// 获取邮箱Outlook的源数据
+	r = py_process_A_obtain_source_data.obtain_source_data_Outlook_block()
+	// subject
+	subject = "GC CP&E CTMZ OA"
+	subject = ""
+	// emails = mail_api.getEmail("收件箱", subject)
+	emails = mail_api.getEmail("Inbox", subject)
+	attachmentId = "AAMkAGExZmUwMjI2LTEzNjItNGU5Ny04ZTY4LTU1Y2M1N2MzYjc5NQBGAAAAAADD1vsLIAkNR7461GWJdQU1BwDkzhR4_91bRKYRVE53EwHYAAAAAAEMAADkzhR4_91bRKYRVE53EwHYAAATySIxAAABEgAQAIlLWP0er5JFu0AgMdvUeAM="
+	emailId = "AAMkAGExZmUwMjI2LTEzNjItNGU5Ny04ZTY4LTU1Y2M1N2MzYjc5NQBGAAAAAADD1vsLIAkNR7461GWJdQU1BwDkzhR4_91bRKYRVE53EwHYAAAAAAEMAADkzhR4_91bRKYRVE53EwHYAAATySIxAAA="
+	Direc= "F:\\RPA"
+	mail_api.downloadFile(attachmentId,emailId,Direc) 
+	// TracePrint(emails)
+	// // bRet = Mail.SendEx("",25,false,"","","","","","","",['''C:\Users'''])
+
+
+End Function
+
+
+Function obtain_source_data_Puma()
+	/*
+    获取puma report的数据
+    */
+
+	// 登录sharepoint
+	login_sharepoint()
+	// 打开共享的sharepoint网址
+	hWeb = WebBrowser.BindBrowser("chrome", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200})
+	pumaNewUrl = "https://pgone.sharepoint.com/:x:/r/sites/PUMAreports/_layouts/15/Doc.aspx?sourcedoc=%7B8515ACAA-F6DF-4547-8239-B40851EE7A89%7D&file=General_report_for_Pending_Requests.xlsx&action=default&mobileredirect=true"
+	iRet = WebBrowser.GoURL(hWeb, pumaNewUrl, true, {}, 30000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200})
+	// Delay(5000)
+	// 进入文件菜单
+	fileMenuTarget = {"wnd": [{"cls": "Chrome_WidgetWin_1", "title": "*", "app": "chrome"}, {"cls": "Chrome_RenderWidgetHostHWND", "title": "Chrome Legacy Window"}], "html": [{"tag": "IFRAME", "parentid": "owl-container"}, {"tag": "BUTTON", "parentid": "FileMenuLauncherContainer"}]}
+	Mouse.Action(fileMenuTarget, "left", "click", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [], "sSimulate": "simulate", "bMoveSmoothly": false})
+
+	// 点击另存为
+	fileSaveAsTarget = {"wnd": [{"cls": "Chrome_WidgetWin_1", "title": "*", "app": "chrome"}, {"cls": "Chrome_RenderWidgetHostHWND", "title": "Chrome Legacy Window"}], "html": [{"tag": "IFRAME", "parentid": "owl-container"}, {"tag": "BUTTON", "id": "FileSaveAsPage"}]}
+	Mouse.Action(fileSaveAsTarget, "left", "click", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [], "sSimulate": "simulate", "bMoveSmoothly": false})
+
+	// 下载副本
+	downloadTarget = {"wnd": [{"cls": "Chrome_WidgetWin_1", "title": "*", "app": "chrome"}, {"cls": "Chrome_RenderWidgetHostHWND", "title": "Chrome Legacy Window"}], "html": [{"tag": "IFRAME", "parentid": "owl-container"}, {"tag": "BUTTON", "id": "DownloadACopy"}]}
+	Mouse.Action(downloadTarget, "left", "click", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [], "sSimulate": "simulate", "bMoveSmoothly": false})
+
+	exportPath = global_configDict['allNeedPathDict']['generalReportForPendingRequestsPath']
+	res = py_public.wait_chrome_file_download('General_report_for_Pending_Requests', exportPath, 3)
+
+	// 对比历史数据
+
+
+End Function
+
+
+
+
+Function login_sharepoint()
+	/*
+	登录sharepoint
+	*/
+
+	Dim sRet
+	tryNumber = 2
+	For loopNumber = 0 To tryNumber 
+ 		Try 
+			// Log.Info("准备登录sharepoint") // test
+			// 结束chrome进程
+			py_public.kill_exe('chrome')
+			loginUrl = "https://login.microsoftonline.com"
+
+			// test
+			// chromeExeLocation = '''C:\Program Files\Google\Chrome\Application\chrome.exe'''
+			// py_python.exe_start(chromeExeLocation)
+			// Delay(10000)
+
+			hWeb = WebBrowser.Create("chrome", loginUrl, 30000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "sBrowserPath": "", "sStartArgs": ""})
+			hWeb = WebBrowser.BindBrowser("chrome", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200})
+			// iRet = WebBrowser.GoURL(hWeb,loginUrl,true,{},30000,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200}) // test
+
+			ChromeLoginWindowTarget = {"wnd": [{"cls": "Chrome_WidgetWin_1", "title": "* - Google Chrome", "app": "chrome"}]}
+			Window.Show(ChromeLoginWindowTarget, "show")
+			Window.Show(ChromeLoginWindowTarget, "max")
+			isAlreadyLoginSuccess = False
+			// Throw 'test except' // test
+			// 判断有无登录成功
+			For loopNumber = 0 To 2 
+ 				// 获取出输入/点击结果
+				// If/Else判断，If成功就Break，Else达到循环边界抛异常
+				hWeb = WebBrowser.BindBrowser("chrome", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200})
+				sRet = WebBrowser.GetURL(hWeb, {"bContinueOnError": True, "iDelayAfter": 300, "iDelayBefore": 200})
+				If py_python.is_in('https://www.office.com', sRet)
+					Log.Info("sharepoint登录成功，已处于登录状态")
+					isAlreadyLoginSuccess = True
+					break
+				Else
+					Delay(1000)
+				End If
+			Next 
+			// sRet = WebBrowser.RunJS(hWeb, '''function(){window.open("https://pgone.sharepoint.com/sites/PKGDDSlist", "_blank")}''', true, {"bContinueOnError": true, "iDelayAfter": 300, "iDelayBefore": 200}) // test
+			If Not isAlreadyLoginSuccess
+				// objCredential = CommanderCredential.GetCredential("RPA专用账号-gcrpadev1.im@pg.com")
+				// objCredential = {'password':'TOday##0905'}
+				// 选择账户
+				usernameTarget = {"html": [{"tag": "DIV", "parentid": "tilesHolder", "aaname": "gcrpadev1.im@pg.com"}], "wnd": [{"app": "chrome", "cls": "Chrome_WidgetWin_1", "title": "*"}, {"cls": "Chrome_RenderWidgetHostHWND", "title": "Chrome Legacy Window"}]}
+				Mouse.Action(usernameTarget, "left", "click", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [], "sSimulate": "simulate", "bMoveSmoothly": false})
+				Delay(3000)
+				// 在fedauth.pg.com页面输入密码
+				passwordTarget = {"html": [{"tag": "INPUT", "id": "password"}], "wnd": [{"app": "chrome", "cls": "Chrome_WidgetWin_1", "title": "*"}, {"cls": "Chrome_RenderWidgetHostHWND", "title": "Chrome Legacy Window"}]}
+				Keyboard.InputText(passwordTarget, "TOday##0905", true, 20, 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "message", "bValidate": false, "bClickBeforeInput": false})
+				// Keyboard.InputPwd(passwordTarget,objCredential['password'],true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "message", "bValidate": false, "bClickBeforeInput": false})
+
+
+				// Sin On 
+				signOnTarget = {"html": [{"tag": "A", "id": "signOnButton"}], "wnd": [{"app": "chrome", "cls": "Chrome_WidgetWin_1", "title": "*"}, {"cls": "Chrome_RenderWidgetHostHWND", "title": "Chrome Legacy Window"}]}
+				Mouse.Action(signOnTarget, "left", "click", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [], "sSimulate": "simulate", "bMoveSmoothly": false})
+
+				// 判断有无登录成功
+				For loopNumber = 0 To 5 
+ 					// 获取出输入/点击结果
+					// If/Else判断，If成功就Break，Else达到循环边界抛异常
+					hWeb = WebBrowser.BindBrowser("chrome", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200})
+					sRet = WebBrowser.GetURL(hWeb, {"bContinueOnError": True, "iDelayAfter": 300, "iDelayBefore": 200})
+					If py_python.is_in('https://www.office.com', sRet)
+						// Log.Info("sharepoint登录成功")
+						Break
+					Else
+						// 
+						If loopNumber = 5
+							exceptionMessage = "异常，登录发生错误"
+							// Log.Info(exceptionMessage)
+							Throw exceptionMessage
+						Else
+							Delay(1000)
+						End If
+
+					End If
+				Next 
+			End If
+
+		Catch Exception
+			exceptionMessage = "登录sharepoint异常，异常信息为:" & Cstr(Exception)
+			Log.Error(exceptionMessage)
+			If loopNumber = tryNumber
+				Throw exceptionMessage
+			End If
+		Else
+			Log.Info("sharepoint登录成功")
+			Break
+			Return True
+		End Try
+	Next 
+End Function

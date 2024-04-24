@@ -1,0 +1,92 @@
+
+// ----------------------------------------单元测试----------------------------
+UnitTest
+    global_configDict = py_python.use_python_method('obtain_global_configDict','py_global_init')
+    // send_rpa_email()
+    main()
+    Return 
+End UnitTest
+
+
+// ----------------------------------------执行主流程----------------------------
+main()
+
+
+Function main() 
+	
+	global_retryDict = {"执行重试的步骤名称":"RPA-纸箱价格核算","已发送的执行成功邮件名称":[],'A_环境初始化和宏运行':''}
+	
+	For loopNumberMain=0 To 0
+		Try
+			
+			// 环境初始化，结束进程
+			// py_public.kill_exe('saplogon')
+			// py_public.kill_exe('sbus')
+			// py_public.kill_exe('chrome')
+			// py_public.kill_exe('excel')
+			global_configDict = py_python.use_python_method('obtain_global_configDict','py_global_init')
+			
+			// 1-获取Puma和Outlook的源数据
+			A_obtain_source_data.A_obtain_source_data_block()
+			// // 2-上传数据至sharepoint
+			B_obtain_QL_Enovia.B_obtain_QL_Enovia_block()
+			// // 3-更改SAP日期
+			C_summary_table.C_summary_table_block()
+			// modify_sap_date.modify_sap_date_three()
+
+		Catch Exception
+			exceptionMessage = Format("主流程下的子流程执行有异常，%s,行数:%d", CStr(Exception['Message']),Exception['Line'])
+			Log.Error(Exception)
+			
+			// 准备发送邮件
+			If loopNumberMain=0
+				// 准备发送邮件
+                global_configDict['runResultMonitorDict']['总体执行情况'] = '执行异常'
+                send_rpa_email()
+                Throw exceptionMessage
+			Else
+				Delay(5000)
+			End If
+			
+		Else 
+			successMessage = Format("主流程下的子流程执行成功", '')
+			Log.Info(successMessage)
+
+			global_configDict['runResultMonitorDict']['总体执行情况'] = '执行成功'
+			send_rpa_email()
+			
+			Break
+		End Try
+		
+	Next
+End Function
+
+Function send_rpa_email(is_send_attach=1,uploadFilePathList=[]) 
+	/*
+	发送邮件
+	is_send_attach int:是否发送附件，默认为1，发送指定附件
+	*/
+	
+	// global_configDict = py_python.use_python_method('obtain_global_configDict','py_public')  // test
+	global_configDict['runResultMonitorDict']['elaspedTime'] = CInt($Flow.ElaspedTime)
+	
+	If is_send_attach=1
+		uploadFilePathListTemp = []
+		
+		For Each path In uploadFilePathListTemp
+			If py_python.check_path_exists(path)
+				uploadFilePathList = push(uploadFilePathList,path)
+			End If
+		Next
+	End If
+	emailSubject = py_python.advance_exec("'RPA-{}-{}'.format(processName,runContent)",{"processName":global_configDict['confProcess']['processName'],"runContent":global_configDict['runResultMonitorDict']['总体执行情况']})
+	// emailSubject = "RPA-工单数据维护-"&global_configDict['confProcess']['processName']&global_configDict['runResultMonitorDict']['总体执行情况']
+	// 根据全局执行情况，获取邮件内容。将global_configDict传入至python函数，生成邮件内容
+	TracePrint(global_configDict)
+	emailContent = py_public.obtain_emailContent(global_configDict)
+	Log.Info(py_python.advance_exec("'邮件内容:\\n%s'%emailContent",{"emailContent":emailContent}))
+	
+	sendEmailDict = {'emailReceivers':global_configDict['confCustomer']['流程运行结果通知邮件收件人'],'emailSubject':emailSubject,'emailContent':emailContent,'emailCC':global_configDict['confCustomer']['流程运行结果通知邮件抄送'],'emailAttachs':uploadFilePathList}
+	bRet = public_use.send_email(sendEmailDict)
+	
+End Function

@@ -1,0 +1,68 @@
+
+
+Function login_PUMA()
+    // 登录PUMA
+
+    py_selenium.chrome_test()
+
+    hWeb = WebBrowser.BindBrowser("chrome",10000,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+
+    iRet = WebBrowser.GoURL(hWeb,"https://pegaprod.pg.com",true,{},30000,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+    Delay(3000)
+
+    // 账号
+    loginUsernameTarget =  {"html":[{"tag":"INPUT","id":"username"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+    Keyboard.InputText(loginUsernameTarget,"autoquotation.al",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "uia", "bValidate": false, "bClickBeforeInput": false})
+    
+    // 密码
+    loginPasswordTarget =  {"html":[{"tag":"INPUT","id":"password"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+    Keyboard.InputText(loginPasswordTarget,"Rpa20240311/",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "uia", "bValidate": false, "bClickBeforeInput": false})
+
+    // Sign on
+    loginButtonTarget = {"html":[{"tag":"A","id":"signOnButton"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+    Mouse.Action(loginButtonTarget,"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": false})
+
+    // Keyboard.InputText(loginUsernameTarget,"autoquotation.al",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": false})
+    // Keyboard.InputText(loginPasswordTarget,"Rpa20240311/",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": false})
+    
+    Delay(1000)
+    // 判断有无登录成功
+End Function
+
+
+moduleEntryTarget = {"html":[{"tag":"SPAN","aaname":"Massive Step Process","isleaf":"1"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+Mouse.Action(moduleEntryTarget,"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": false})
+
+
+
+// sRet = WebBrowser.RunJS(hWeb,"function(){window.open('https://pegaprod.pg.com'); return 123}",true,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+// sRet = WebBrowser.RunJS(hWeb,"function(){document.querySelector('#username').value='autoquotation.al'; return 123}",true,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+// // username
+// sRet = WebBrowser.RunJS(hWeb,"function(){document.querySelector('#password').value='Rpa20240311/'; return 123}",true,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+// username
+// sRet = WebBrowser.RunJS(hWeb,"function(){document.querySelector('#signOnButton').click(); return 123}",true,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+// username
+
+
+
+
+
+subModuleSelectTarget = {"html":[{"tag":"SELECT","id":"875505fd"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+UiElement.SetSelect(subModuleSelectTarget,['Price-Quotation Download'],"text",{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+// sRet = UiElement.GetValue(subModuleSelectTarget,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+arrSelItem = UiElement.GetSelect(subModuleSelectTarget,"text",{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+
+totalResultTarget = {"html":[{"tag":"DIV","aaname":"Total results*","isleaf":"1"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+sRet = UiElement.GetValue(totalResultTarget,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+
+// downloadTarget = 
+
+
+
+
+
+
+
+
+
+

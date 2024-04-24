@@ -1,0 +1,237 @@
+
+// ----------------------------------------------单元测试--------------------------------------------
+UnitTest
+	// TracePrint('1')
+	global_configDict = py_python.use_python_method('obtain_global_configDict', 'py_global_init')
+	// global_configDict = py_global_init.Inits()
+	exportPath = global_configDict['allNeedPathDict']['generalReportForPendingRequestsPath']
+	// // TracePrint(global_configDict['hhhhhh'])
+	// TracePrint(global_configDict)
+
+	// py_python.advance_eval("re.findall('\\d+','1231dd')",{"re":"import re"})
+	// login_sharepoint()
+	// obtain_source_data_Puma()
+
+	// py_process.update_history_source_PumaReports()
+	// A_obtain_source_data_block()
+
+	// obtain_source_data_Puma()
+	// // obtain_source_data_Outlook()
+	// // 合并主数据表
+	// py_process.source_data_history_deal()
+
+	// // py_process.finally_write()
+	// res = py_python.advance_eval('3+3')
+	// TracePrint(res)
+
+	Return 
+End UnitTest
+
+
+Function B_obtain_QL_Enovia_block()
+	behaviorName = "2-获取和补充QL和Enovia数据"
+	Try 
+
+        // 根据Vendor Code更新material type
+        returnTypeMessgae = py_python.use_python_method('update_history_MaterialType','py_process_B_obtain_QL_Enovia')
+		TracePrint("returnTypeMessgae",returnTypeMessgae)
+		// 获取邮箱Outlook的源QL数据
+		// r = py_process_B_obtain_QL_Enovia.obtain_data_QL_block()
+		// 比对处理历史数据,同时检查异常的
+		returnQLMessgae = py_python.use_python_method('update_history_QL','py_process_B_obtain_QL_Enovia')
+		TracePrint(returnQLMessgae,returnQLMessgae)
+		// returnPumaMessgae = "returnPumaMessgae"
+		// returnOutlookMessgae = "returnOutlookMessgae"
+
+        // 登录Enovia
+        // login_Enovia()
+		// // 拼接消息
+        returnEnoviaMessgae = "1231"
+		returnMessgae = py_python.advance_exec("'{}\\n\\n{}\\n\\n{}'.format(returnTypeMessgae,returnQLMessgae,returnEnoviaMessgae)",{"returnTypeMessgae":returnTypeMessgae,"returnQLMessgae":returnQLMessgae,"returnEnoviaMessgae":returnEnoviaMessgae})
+
+		
+	Catch Exception
+		exceptionMessage = py_python.advance_exec("'%s处执行异常，%s,行数:%d'%(behaviorName,Exception,Line)", {"behaviorName": behaviorName, "Exception": CStr(Exception), "Line": Exception['Line']})
+		Log.Error(Exception)
+		sonDict = {behaviorName: ['执行异常', exceptionMessage]}
+		// TracePrint("global_configDict['runResultMonitorDict']",global_configDict['runResultMonitorDict'])
+		global_configDict['runResultMonitorDict']['resultMonitorMessageDict'] = py_python.dict_update(global_configDict['runResultMonitorDict']['resultMonitorMessageDict'], sonDict)
+		global_configDict['runResultMonitorDict']['是否继续执行后续流程操作'] = '不继续执行'
+
+		Throw exceptionMessage
+	Else
+		// successMessage = Format("")
+		// Log.Info(successMessage)
+		Log.Info(py_python.advance_exec("'%s处执行成功，执行详情数据:\\n%s'%(behaviorName,returnMessgae)", {"returnMessgae": returnMessgae, "behaviorName": behaviorName}))
+
+		sonDict = {behaviorName: ['执行成功', returnMessgae]}
+		global_configDict['runResultMonitorDict']['resultMonitorMessageDict'] = py_python.dict_update(global_configDict['runResultMonitorDict']['resultMonitorMessageDict'], sonDict)
+
+	End Try
+	// TracePrint('global_configDict',global_configDict['runResultMonitorDict']['resultMonitorMessageDict'])
+End Function
+
+Function Enovia() 
+    
+    // 搜索框
+    searchInputTarget = {"html":[{"tag":"INPUT","parentid":"input_search_div"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+    Keyboard.InputText(searchInputTarget,"21154256",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": True})
+    // 搜索
+    searchButtonTarget = {"wnd":[{"cls":"Chrome_WidgetWin_1","title":"*","app":"chrome"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}],"html":[{"tag":"DIV","class":"run_btn_search fonticon fonticon-search"}]}
+    Mouse.Action(searchButtonTarget,"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": false})
+    // Name
+    tableFirstColumnTarget = {"html":[{"tag":"DIV","class":"wux-layouts-left-poolcontainer"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+    arrElementList = UiElement.GetChildren(tableFirstColumnTarget,1, {"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+    // 
+    For i = 0 To len(arrElementList)-1 step 1
+        sonTarget = arrElementList[i]
+        sRet = UiElement.GetValue(sonTarget,{"bContinueOnError":false,"iDelayAfter":30,"iDelayBefore":20})
+        // TracePrint(sRet)
+        if sRet ="21154256"
+            Mouse.Action(sonTarget,"right","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": false})
+            openTarget = {"html":[{"tag":"SPAN","parentid":"action_DisplayDetails","aaname":"Open"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+            Mouse.Action(openTarget,"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": false})
+            
+            // Files
+            FilesTarget = {"html":[{"tag":"LABEL","aaname":"Files","parentname":"li_pgPartAPPDocumentFiles"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+            Mouse.Action(FilesTarget,"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": false})
+            
+            FilesTableTarget = {"html":[{"tag":"TBODY","parentid":"APPFileSummary"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+            // tr list
+            arrElementList = UiElement.GetChildren(FilesTableTarget,1, {"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+            For i = 1 To len(arrElementList)-1 step 1
+                sonTarget = arrElementList[i]
+                arrElementList2 = UiElement.GetChildren(sonTarget,1, {"bContinueOnError":false,"iDelayAfter":30,"iDelayBefore":20})
+                TracePrint(arrElementList2)
+                sRet = UiElement.GetValue(arrElementList2[2],{"bContinueOnError":false,"iDelayAfter":30,"iDelayBefore":20})
+                TracePrint(sRet)
+                // 先删除文件
+		        py_public.delete_direc_file('.pdf')
+                // download
+                arrElementList3 = UiElement.GetChildren(arrElementList2[5],1, {"bContinueOnError":false,"iDelayAfter":30,"iDelayBefore":20})
+                Mouse.Action(arrElementList3[1],"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": false})
+                exportPath = "D:\\RPA\\21154256.pdf"
+                res = py_public.wait_chrome_file_download('.pdf', exportPath, 3)
+            Next
+            Break
+        End If
+    Next
+
+
+End Function
+
+Function login_Enovia(systemName = "Enovia")
+    /*
+    登录PUMA或Enovia（同一个登录页面）
+
+    systemName 系统简称
+    */
+    
+    username = "autoquotation.al"
+    password = "Rpa20240311/"
+    If systemName = "PUMA"
+        loginUrl = "https://pegaprod.pg.com"
+        loginSuccessUrlKey = "PRAuth"
+    Else
+        loginUrl = "https://plmprod.pg.com/enovia/"
+        loginSuccessUrlKey = "common"
+    End If
+
+    tryNumber = 2
+	For loopNumber = 0 To tryNumber 
+ 		Try 
+            // 登录PUMA
+            py_public.kill_exe("chrome")
+            // py_selenium.chrome_test()
+            chromeExePath = '''C:\Program Files\Google\Chrome\Application\chrome.exe'''
+            // py_python.exe_start(chromeExePath)
+            py_python.advance_exec("subprocess.Popen(chromeExePath)",{"chromeExePath":chromeExePath,"subprocess":"import subprocess"})
+
+            Delay(10000)
+
+            hWeb = WebBrowser.BindBrowser("chrome",10000,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+
+            iRet = WebBrowser.GoURL(hWeb,loginUrl,true,{},30000,{"bContinueOnError":false,"iDelayAfter":300,"iDelayBefore":200})
+            
+            Delay(3000)
+            
+            // 判断有无已登录成功
+            isAlreadyLoginSuccess = False
+			For loopNumber = 0 To 2 
+ 				// 获取出输入/点击结果
+				// If/Else判断，If成功就Break，Else达到循环边界抛异常
+				hWeb = WebBrowser.BindBrowser("chrome", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200})
+				sRet = WebBrowser.GetURL(hWeb, {"bContinueOnError": True, "iDelayAfter": 300, "iDelayBefore": 200})
+				If py_python.is_in(loginSuccessUrlKey, sRet)
+                    Log.Info(py_python.advance_exec("'识别到%s已处于登录状态'%input1",{"input1":systemName}))
+		
+					isAlreadyLoginSuccess = True
+					break
+				Else
+					Delay(1000)
+				End If
+			Next
+            If Not isAlreadyLoginSuccess
+                // 账号
+                loginUsernameTarget =  {"html":[{"tag":"INPUT","id":"username"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+                // Keyboard.InputText(loginUsernameTarget,"cai.jf",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": True})
+                
+                Keyboard.InputText(loginUsernameTarget,username,true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": True})
+                
+                // 密码
+                loginPasswordTarget =  {"html":[{"tag":"INPUT","id":"password"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+                // Keyboard.InputText(loginPasswordTarget,"Cr8080cr/",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": True})
+                Keyboard.InputText(loginPasswordTarget,password,true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": True})
+
+                Delay(2000)
+                // Sign on
+                loginButtonTarget = {"html":[{"tag":"A","id":"signOnButton"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+                // loginButtonTarget = {"html":[{"tag":"SPAN","id":"signOnButtonSpan"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+                // loginButtonTarget = {"html":[{"tag":"SPAN","id":"signOnButtonSpan"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+                Mouse.Action(loginButtonTarget,"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": True})
+                // Keyboard.Press("Enter", "press", [],{"iDelayAfter": 300, "iDelayBefore": 200, "sSimulate": "simulate"})
+
+                // Keyboard.InputText(loginUsernameTarget,"autoquotation.al",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": false})
+                // Keyboard.InputText(loginPasswordTarget,"Rpa20240311/",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": false})
+                
+                Delay(5000)
+                If systemName = "Enovia" 
+                    submitTarget = {"html":[{"tag":"LABEL","parentid":"submitButton"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
+                    Mouse.Action(submitTarget,"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": True})
+
+                End If
+                // 判断有无登录成功
+                For loopNumber = 0 To 5 
+                    // 获取出输入/点击结果
+                    // If/Else判断，If成功就Break，Else达到循环边界抛异常
+                    hWeb = WebBrowser.BindBrowser("chrome", 10000, {"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200})
+                    sRet = WebBrowser.GetURL(hWeb, {"bContinueOnError": True, "iDelayAfter": 300, "iDelayBefore": 200})
+                    If py_python.is_in(loginSuccessUrlKey, sRet)
+                        // Log.Info("sharepoint登录成功")
+                        Break
+                    Else
+                        // 
+                        If loopNumber = 5
+                            exceptionMessage = "异常，未在指定时间内识别进入到主页面"
+                            // Log.Info(exceptionMessage)
+                            Throw exceptionMessage
+                        Else
+                            Delay(1000)
+                        End If
+
+                    End If
+                Next 
+            End If
+        Catch Exception
+            exceptionMessage = py_python.advance_exec("'登录%s异常，异常信息为:%s'%(input1,input2)",{"input1":systemName,"input2":Cstr(Exception)})
+            Log.Error(exceptionMessage)
+            If loopNumber = tryNumber
+                Throw exceptionMessage
+            End If
+        Else
+            Log.Info(py_python.advance_exec("'%s登录成功'%input1",{"input1":systemName}))
+            Break
+            Return True
+        End Try
+	Next
+End Function

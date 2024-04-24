@@ -1,0 +1,112 @@
+
+
+// ----------------------------------------------单元测试--------------------------------------------
+UnitTest
+	// TracePrint('1')
+	global_configDict = py_python.use_python_method('obtain_global_configDict', 'py_global_init')
+	// global_configDict = py_global_init.Inits()
+	exportPath = global_configDict['allNeedPathDict']['generalReportForPendingRequestsPath']
+	// // TracePrint(global_configDict['hhhhhh'])
+	// TracePrint(global_configDict)
+
+	// py_python.advance_eval("re.findall('\\d+','1231dd')",{"re":"import re"})
+	// login_sharepoint()
+	// obtain_source_data_Puma()
+
+	// py_process.update_history_source_PumaReports()
+	// A_obtain_source_data_block()
+	C_summary_table_block()
+	// obtain_source_data_Puma()
+	// // obtain_source_data_Outlook()
+	// // 合并主数据表
+	// py_process.source_data_history_deal()
+
+	// // py_process.finally_write()
+	// res = py_python.advance_eval('3+3')
+	// TracePrint(res)
+
+	Return 
+End UnitTest
+
+
+Function C_summary_table_block()
+	behaviorName = "3-整理汇总表"
+	Try 
+		// 获取邮箱Outlook的源QL数据
+		// r = py_process_B_obtain_QL_Enovia.obtain_data_QL_block()
+		// 比对处理历史数据,同时检查异常的
+		returnMainMessgae = py_python.use_python_method('update_main_data','py_process_C_summary_table')
+		TracePrint("returnMainMessgae",returnMainMessgae)
+
+		// 更新数据到历史表
+		returnSummaryMessgae = py_python.use_python_method('write_final_summary_table','py_process_C_summary_table')
+
+		// 发邮件
+		// 判断总数
+		// rpaOperateRecordPath = global_configDict['allNeedDirecDict']['rpaOperateRecordPath']
+		allChangeDataDictListList = py_process_C_summary_table.df_toDict_records()
+		For i = 0 To len(allChangeDataDictListList)-1 Step 1
+		// For i = 0 To 1 Step 1
+			tempDict = allChangeDataDictListList[i][0][0]
+			TracePrint(tempDict)
+			changeNumberDict = {}
+			Try
+				TracePrint(i)
+				// invoiceNumberList = ['50110125']
+				attachList = []
+				// emailContent = "test"
+				emailContent = py_python.use_python_method('obtain_price_emailContent','py_process_C_summary_table',[allChangeDataDictListList[i][1]])
+				TracePrint(emailContent)
+				// 获取收件人、抄送
+				emailSubject = py_python.advance_exec("'<Quotation> shipper {} {}'.format(calendar.month_abbr[datetime.datetime.now().month],datetime.datetime.now().day)")
+
+				emailReceivers = py_python.advance_exec("[i for i in emailReceivers.split(',') if i!='']",{"emailReceivers":tempDict['to mail']})
+				TracePrint(emailReceivers)
+				emailCC = py_python.advance_exec("[i for i in emailCC.split(',') if i!='']",{"emailCC":tempDict['cc mail']})
+				TracePrint(emailCC)
+				sendEmailDict = {'emailReceivers':emailReceivers,'emailSubject':emailSubject,'emailContent':emailContent,'emailCC':emailCC,'emailAttachs':attachList}
+				public_use.send_email(sendEmailDict)
+				sonDict = {'发送询价邮件是否成功':'成功'}
+				changeNumberDict = py_python.dict_update(changeNumberDict, sonDict)
+				// break
+			Catch Exception
+				exceptionMessage = Format("异常，发送询价邮件处执行异常，%s,行数:%d", CStr(Exception['Message']),Exception['Line'])
+				Log.Error(Exception)
+				sonDict = {'发送询价邮件是否成功':exceptionMessage}
+				changeNumberDict = py_python.dict_update(changeNumberDict, sonDict)
+			End Try
+			// 更新主数据表
+			rpaOperateRecordPath = '''D:\RPA\纸箱价格核算\历史主数据RPA处理表.xlsx'''
+			tempDictList = allChangeDataDictListList[i][0]
+			For Each tempDict2 In tempDictList 
+				inputDict = {"path": rpaOperateRecordPath, "indexFlag": ["Material Code","Plant Code","Vendor Code"], "queryIndexValue": [tempDict2["Material Code"],tempDict2["Plant Code"],tempDict2["Vendor Code"]], "changeDict": changeNumberDict}
+				py_public.change_excel_col(inputDict['path'], inputDict['indexFlag'], inputDict['queryIndexValue'], inputDict['changeDict'])
+			Next
+			
+			
+		Next
+		// 拼接消息
+        returnPriceMessgae = py_python.use_python_method('obtain_price_email_messsage','py_process_C_summary_table')
+		returnMessgae = py_python.advance_exec("'{}\\n\\n{}\\n\\n{}'.format(returnMainMessgae,returnSummaryMessgae,returnPriceMessgae)",{"returnMainMessgae":returnMainMessgae,"returnSummaryMessgae":returnSummaryMessgae,"returnPriceMessgae":returnPriceMessgae})
+
+		
+	Catch Exception
+		exceptionMessage = py_python.advance_exec("'%s处执行异常，%s,行数:%d'%(behaviorName,Exception,Line)", {"behaviorName": behaviorName, "Exception": CStr(Exception), "Line": Exception['Line']})
+		Log.Error(Exception)
+		sonDict = {behaviorName: ['执行异常', exceptionMessage]}
+		// TracePrint("global_configDict['runResultMonitorDict']",global_configDict['runResultMonitorDict'])
+		global_configDict['runResultMonitorDict']['resultMonitorMessageDict'] = py_python.dict_update(global_configDict['runResultMonitorDict']['resultMonitorMessageDict'], sonDict)
+		global_configDict['runResultMonitorDict']['是否继续执行后续流程操作'] = '不继续执行'
+
+		Throw exceptionMessage
+	Else
+		// successMessage = Format("")
+		// Log.Info(successMessage)
+		Log.Info(py_python.advance_exec("'%s处执行成功，执行详情数据:\\n%s'%(behaviorName,returnMessgae)", {"returnMessgae": returnMessgae, "behaviorName": behaviorName}))
+
+		sonDict = {behaviorName: ['执行成功', returnMessgae]}
+		global_configDict['runResultMonitorDict']['resultMonitorMessageDict'] = py_python.dict_update(global_configDict['runResultMonitorDict']['resultMonitorMessageDict'], sonDict)
+
+	End Try
+	// TracePrint('global_configDict',global_configDict['runResultMonitorDict']['resultMonitorMessageDict'])
+End Function
