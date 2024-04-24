@@ -110,7 +110,7 @@ Function Enovia()
                 // download
                 arrElementList3 = UiElement.GetChildren(arrElementList2[5],1, {"bContinueOnError":false,"iDelayAfter":30,"iDelayBefore":20})
                 Mouse.Action(arrElementList3[1],"left","click",10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 200, "bSetForeground": true, "sCursorPosition": "Center", "iCursorOffsetX": 0, "iCursorOffsetY": 0, "sKeyModifiers": [],"sSimulate": "simulate", "bMoveSmoothly": false})
-                exportPath = "D:\\RPA\\21154256.pdf"
+                exportPath = "F:\\RPA\\21154256.pdf"
                 res = py_public.wait_chrome_file_download('.pdf', exportPath, 3)
             Next
             Break

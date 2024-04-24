@@ -174,7 +174,8 @@
                             "component": "flowPanel",
                             "config": {
                                 "i18nKey": "flow"
-                            }
+                            },
+                            "className": ""
                         },
                         {
                             "type": "tab",
@@ -183,7 +184,28 @@
                             "component": "commandPanel",
                             "config": {
                                 "i18nKey": "command"
-                            }
+                            },
+                            "className": ""
+                        },
+                        {
+                            "type": "tab",
+                            "id": "timeline",
+                            "name": "时间线",
+                            "component": "timeLinePanel",
+                            "config": {
+                                "i18nKey": "timeline"
+                            },
+                            "className": ""
+                        },
+                        {
+                            "type": "tab",
+                            "id": "search",
+                            "name": "搜索",
+                            "component": "searchPanel",
+                            "config": {
+                                "i18nKey": "search"
+                            },
+                            "className": ""
                         }
                     ]
                 },
@@ -201,7 +223,8 @@
                             "component": "commandPropertyPanel",
                             "config": {
                                 "i18nKey": "property"
-                            }
+                            },
+                            "className": ""
                         },
                         {
                             "type": "tab",
@@ -210,7 +233,8 @@
                             "component": "commandVariablePanel",
                             "config": {
                                 "i18nKey": "variable"
-                            }
+                            },
+                            "className": ""
                         }
                     ]
                 }
@@ -221,15 +245,14 @@
                 "children": [
                     {
                         "type": "tabset",
-                        "id": "#5261b48d-e8e0-4bf2-8c53-0ac6fa2858c1",
-                        "weight": 102.0754716981132,
-                        "selected": 3,
+                        "id": "#d442f44b-69e4-4455-8f37-753bfb5a9021",
+                        "selected": 1,
                         "children": [
                             {
                                 "type": "tab",
                                 "id": "2b705730-dac1-11ee-aece-f3e0b63b0160",
                                 "name": "纸箱价格核算_1_主数据更新",
-                                "helpText": "D:\\RPA\\Projects\\纸箱价格核算_20240418\\main.prj",
+                                "helpText": "F:\\RPA\\Projects\\纸箱价格核算_1_主数据更新\\main.prj",
                                 "component": "flowEditor",
                                 "config": {
                                     "type": "project",
@@ -241,45 +264,9 @@
                             },
                             {
                                 "type": "tab",
-                                "id": "ed85844c-a8d5-401b-997a-f8d900e80197",
-                                "name": "公共使用模块",
-                                "helpText": "D:\\RPA\\Projects\\纸箱价格核算_1_主数据更新\\public_use.task",
-                                "component": "taskNodeEditor",
-                                "config": {
-                                    "selfControl": true,
-                                    "id": "ed85844c-a8d5-401b-997a-f8d900e80197",
-                                    "type": "task",
-                                    "selector": [
-                                        "ed85844c-a8d5-401b-997a-f8d900e80197"
-                                    ]
-                                },
-                                "enableClose": true,
-                                "className": "",
-                                "icon": "../../../assets/_/pages-next/home/childrens/main/assets/tab-task.png"
-                            },
-                            {
-                                "type": "tab",
-                                "id": "2b707e40-dac1-11ee-aece-f3e0b63b0160",
-                                "name": "main",
-                                "helpText": "D:\\RPA\\Projects\\纸箱价格核算_1_主数据更新\\main.task",
-                                "component": "taskNodeEditor",
-                                "config": {
-                                    "selfControl": true,
-                                    "id": "2b707e40-dac1-11ee-aece-f3e0b63b0160",
-                                    "type": "task",
-                                    "selector": [
-                                        "2b707e40-dac1-11ee-aece-f3e0b63b0160"
-                                    ]
-                                },
-                                "enableClose": true,
-                                "className": "",
-                                "icon": "../../../assets/_/pages-next/home/childrens/main/assets/tab-task.png"
-                            },
-                            {
-                                "type": "tab",
                                 "id": "70ecc307-876a-4366-a697-ed88235b01b5",
                                 "name": "2-获取和补充QL和Enovia数据",
-                                "helpText": "D:\\RPA\\Projects\\纸箱价格核算_1_主数据更新\\B_obtain_QL_Enovia.task",
+                                "helpText": "F:\\RPA\\Projects\\纸箱价格核算_1_主数据更新\\B_obtain_QL_Enovia.task",
                                 "component": "taskNodeEditor",
                                 "config": {
                                     "selfControl": true,
@@ -292,60 +279,6 @@
                                 "enableClose": true,
                                 "className": "",
                                 "icon": "../../../assets/_/pages-next/home/childrens/main/assets/tab-task.png"
-                            },
-                            {
-                                "type": "tab",
-                                "id": "14f2aec0-5e23-4926-9957-57c2c0876cc7",
-                                "name": "1-获取Puma和Outlook的源数据",
-                                "helpText": "D:\\RPA\\Projects\\纸箱价格核算_1_主数据更新\\A_obtain_source_data.task",
-                                "component": "taskNodeEditor",
-                                "config": {
-                                    "selfControl": true,
-                                    "id": "14f2aec0-5e23-4926-9957-57c2c0876cc7",
-                                    "type": "task",
-                                    "selector": [
-                                        "14f2aec0-5e23-4926-9957-57c2c0876cc7"
-                                    ]
-                                },
-                                "enableClose": true,
-                                "className": "",
-                                "icon": "../../../assets/_/pages-next/home/childrens/main/assets/tab-task.png"
-                            },
-                            {
-                                "type": "tab",
-                                "id": "e8f23a6a-2411-4aea-a447-26b3cc6bd842",
-                                "name": "流程块",
-                                "helpText": "D:\\RPA\\Projects\\纸箱价格核算_1_主数据更新\\流程块.task",
-                                "component": "taskNodeEditor",
-                                "config": {
-                                    "selfControl": true,
-                                    "id": "e8f23a6a-2411-4aea-a447-26b3cc6bd842",
-                                    "type": "task",
-                                    "selector": [
-                                        "e8f23a6a-2411-4aea-a447-26b3cc6bd842"
-                                    ]
-                                },
-                                "enableClose": true,
-                                "className": "",
-                                "icon": "../../../assets/_/pages-next/home/childrens/main/assets/tab-task.png"
-                            },
-                            {
-                                "type": "tab",
-                                "id": "34ae7100-e2b5-4364-a502-bac4b17432a3",
-                                "name": "3-整理汇总表",
-                                "helpText": "D:\\RPA\\Projects\\纸箱价格核算_1_主数据更新\\C_summary_table.task",
-                                "component": "taskNodeEditor",
-                                "config": {
-                                    "selfControl": true,
-                                    "id": "34ae7100-e2b5-4364-a502-bac4b17432a3",
-                                    "type": "task",
-                                    "selector": [
-                                        "34ae7100-e2b5-4364-a502-bac4b17432a3"
-                                    ]
-                                },
-                                "enableClose": true,
-                                "className": "",
-                                "icon": "../../../assets/_/pages-next/home/childrens/main/assets/tab-task.png"
                             }
                         ],
                         "active": true
@@ -353,8 +286,7 @@
                     {
                         "type": "tabset",
                         "id": "buttom",
-                        "weight": 97.9245283018868,
-                        "height": 519,
+                        "height": 200,
                         "enableDrop": false,
                         "enableDrag": false,
                         "enableDivide": false,
@@ -371,6 +303,7 @@
                                     "i18nKey": "output"
                                 },
                                 "enableDrag": false,
+                                "className": "",
                                 "enableRenderOnDemand": false
                             }
                         ]
@@ -379,7 +312,7 @@
             }
         },
         "type": "flow",
-        "version": "1.0.20"
+        "version": "1.0.21"
     },
     "flowConfig": {
         "scrollbarPosition": {
