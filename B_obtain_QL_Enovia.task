@@ -73,6 +73,7 @@ End Function
 
 Function Enovia() 
     
+    /
     // 搜索框
     searchInputTarget = {"html":[{"tag":"INPUT","parentid":"input_search_div"}],"wnd":[{"app":"chrome","cls":"Chrome_WidgetWin_1","title":"*"},{"cls":"Chrome_RenderWidgetHostHWND","title":"Chrome Legacy Window"}]}
     Keyboard.InputText(searchInputTarget,"21154256",true,20,10000,{"bContinueOnError": false, "iDelayAfter": 300, "iDelayBefore": 500, "bSetForeground": true, "sSimulate": "simulate", "bValidate": false, "bClickBeforeInput": True})
@@ -113,6 +114,7 @@ Function Enovia()
                 exportPath = "F:\\RPA\\21154256.pdf"
                 res = py_public.wait_chrome_file_download('.pdf', exportPath, 3)
             Next
+            py_public.close_windows_contains("components","contain")
             Break
         End If
     Next
